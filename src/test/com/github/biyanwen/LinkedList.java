@@ -157,14 +157,10 @@ public class LinkedList {
 		 * @return {@link Node}
 		 */
 		public Node reverseLinkedListInterval(Node head, int startIndex, int endIndex) {
-			if (startIndex - 1 == 1) {
-				beforeOneNode = head;
-			}
 			if (startIndex == 1) {
 				return reverseLinkedListBeforeN(head, endIndex);
 			}
 			head.next = reverseLinkedListInterval(head.next, startIndex - 1, endIndex - 1);
-//			beforeOneNode.next = node;
 			return head;
 		}
 

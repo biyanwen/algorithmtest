@@ -66,6 +66,18 @@ public class LinkedList {
 		Assertions.assertEquals(3, interval.next.next.next.next.value);
 	}
 
+	@Test
+	public void reverseLinkedListGroupOfKTest() {
+		NodeAlgorithm nodeAlgorithm = new NodeAlgorithm();
+		Node node = nodeAlgorithm.createNode(5);
+		Node groupOfK = nodeAlgorithm.reverseLinkedListGroupOfK(node, 2);
+		Assertions.assertEquals(2, groupOfK.value);
+		Assertions.assertEquals(1, groupOfK.next.value);
+		Assertions.assertEquals(4, groupOfK.next.next.value);
+		Assertions.assertEquals(3, groupOfK.next.next.next.value);
+		Assertions.assertEquals(5, groupOfK.next.next.next.next.value);
+	}
+
 	public static class Node {
 		private int value;
 		private Node next;
@@ -162,6 +174,31 @@ public class LinkedList {
 			}
 			head.next = reverseLinkedListInterval(head.next, startIndex - 1, endIndex - 1);
 			return head;
+		}
+
+		/**
+		 * K 个一组反转链表
+		 *
+		 * @param head 头
+		 * @param k    k
+		 * @return {@link Node}
+		 */
+		public Node reverseLinkedListGroupOfK(Node head, int k) {
+			if (head == null || head.next == null) {
+				return head;
+			}
+			Node tmpNode = head;
+			// 判断链表是否够长 k
+			for (int i = 0; i < k; i++) {
+				tmpNode = tmpNode.next;
+				if (tmpNode == null) {
+					return head;
+				}
+			}
+			// 如果够长就反转以 head 为头结点的前 k 个节点
+			Node newHead = reverseLinkedListBeforeN(head, k);
+			head.next = reverseLinkedListGroupOfK(head.next, k);
+			return newHead;
 		}
 
 		/**

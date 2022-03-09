@@ -66,6 +66,12 @@ public class LinkedList {
 		Assertions.assertEquals(3, interval.next.next.next.next.value);
 	}
 
+	/**
+	 * 链表中的节点每k个一组翻转
+	 * <p>
+	 * 输入链表： 1 -> 2 -> 3 -> 4 -> 5
+	 * 返回链表： 2 -> 1 -> 4 -> 3 -> 5
+	 */
 	@Test
 	public void reverseLinkedListGroupOfKTest() {
 		NodeAlgorithm nodeAlgorithm = new NodeAlgorithm();
@@ -76,6 +82,76 @@ public class LinkedList {
 		Assertions.assertEquals(4, groupOfK.next.next.value);
 		Assertions.assertEquals(3, groupOfK.next.next.next.value);
 		Assertions.assertEquals(5, groupOfK.next.next.next.next.value);
+	}
+
+	@Test
+	public void mergeTwoSoredLinkedListTest() {
+		Node oneSoredLined = createOneSoredLinedList();
+		Node twoSoredLined = createTwoSoredLinedList();
+
+		NodeAlgorithm nodeAlgorithm = new NodeAlgorithm();
+		Node newHead = nodeAlgorithm.mergeTwoLists(oneSoredLined, twoSoredLined);
+		Assertions.assertEquals(1, newHead.value);
+		Assertions.assertEquals(2, newHead.next.value);
+		Assertions.assertEquals(3, newHead.next.next.value);
+		Assertions.assertEquals(4, newHead.next.next.next.value);
+		Assertions.assertEquals(5, newHead.next.next.next.next.value);
+
+	}
+
+	public Node mergeTwoLists(Node l1, Node l2) {
+		if (l1 == null) {
+			return l2;
+		} else if (l2 == null) {
+			return l1;
+		} else if (l1.value < l2.value) {
+			l1.next = mergeTwoLists(l1.next, l2);
+			return l1;
+		} else {
+			l2.next = mergeTwoLists(l1, l2.next);
+			return l2;
+		}
+
+	}
+
+	@Test
+	public void tt() {
+
+		Node oneSoredLined = createOneSoredLinedList();
+		for (Node cur = oneSoredLined; cur != null; cur = cur.next) {
+			System.out.println(cur.value);
+		}
+	}
+
+
+	private Node createTwoSoredLinedList() {
+		Node three = new Node();
+		three.setValue(6);
+
+		Node two = new Node();
+		two.setValue(4);
+		two.setNext(three);
+
+		Node head = new Node();
+		head.setValue(2);
+		head.setNext(two);
+
+		return head;
+	}
+
+	private Node createOneSoredLinedList() {
+		Node three = new Node();
+		three.setValue(5);
+
+		Node two = new Node();
+		two.setValue(3);
+		two.setNext(three);
+
+		Node head = new Node();
+		head.setValue(1);
+		head.setNext(two);
+
+		return head;
 	}
 
 	public static class Node {
@@ -223,6 +299,24 @@ public class LinkedList {
 				}
 			}
 			return head;
+		}
+
+		public Node mergeTwoLists(Node oneSoredLined, Node twoSoredLined) {
+			if (oneSoredLined == null) {
+				return twoSoredLined;
+			}
+			if (twoSoredLined == null) {
+				return oneSoredLined;
+			}
+			Node newHead;
+			if (oneSoredLined.value <= twoSoredLined.value) {
+				newHead = oneSoredLined;
+				oneSoredLined.next = mergeTwoLists(oneSoredLined.next, twoSoredLined);
+			} else {
+				newHead = twoSoredLined;
+				twoSoredLined.next = mergeTwoLists(oneSoredLined, twoSoredLined.next);
+			}
+			return newHead;
 		}
 	}
 }

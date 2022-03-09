@@ -1,5 +1,6 @@
 package com.github.biyanwen;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -18,6 +19,15 @@ public class Sort {
 		sortBean.add(1);
 		sortBean.add(5);
 		sortBean.add(9);
+
+		Integer poll = sortBean.poll();
+		Assertions.assertEquals(1, poll);
+		Integer poll1 = sortBean.poll();
+		Assertions.assertEquals(5, poll1);
+		Integer poll2 = sortBean.poll();
+		Assertions.assertEquals(9, poll2);
+		Integer poll3 = sortBean.poll();
+		Assertions.assertEquals(10, poll3);
 	}
 
 	/**
@@ -60,7 +70,35 @@ public class Sort {
 			if (list.isEmpty()) {
 				return null;
 			}
-			return null;
+			if (list.size() == 1) {
+				return list.remove(0);
+			}
+			//最小值和最大值交换
+			int index = 0;
+			T minValue = list.get(index);
+			T maxValue = list.remove(list.size() - 1);
+			list.set(0, maxValue);
+
+			int leftIndex = getLeftChildIndex(index);
+			int rightIndex = getRightChildIndex(index);
+			while (leftIndex < list.size() || rightIndex < list.size()) {
+				int smallerIndex;
+				if (leftIndex >= list.size()) {
+					smallerIndex = rightIndex;
+				} else if (rightIndex >= list.size()) {
+					smallerIndex = leftIndex;
+				} else {
+					smallerIndex = list.get(leftIndex).compareTo(list.get(rightIndex)) <= 0 ? leftIndex : rightIndex;
+				}
+				T t = list.get(index);
+				T smallerValue = list.get(smallerIndex);
+				list.set(smallerIndex, t);
+				list.set(index, smallerValue);
+				index = smallerIndex;
+				leftIndex = getLeftChildIndex(index);
+				rightIndex = getRightChildIndex(index);
+			}
+			return minValue;
 		}
 
 		/**

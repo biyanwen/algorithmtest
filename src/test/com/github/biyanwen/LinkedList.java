@@ -114,16 +114,6 @@ public class LinkedList {
 
 	}
 
-	@Test
-	public void tt() {
-
-		Node oneSoredLined = createOneSoredLinedList();
-		for (Node cur = oneSoredLined; cur != null; cur = cur.next) {
-			System.out.println(cur.value);
-		}
-	}
-
-
 	private Node createTwoSoredLinedList() {
 		Node three = new Node();
 		three.setValue(6);

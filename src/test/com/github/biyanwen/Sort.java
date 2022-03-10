@@ -38,6 +38,14 @@ public class Sort {
 	 */
 	public static class SortAlgorithm {
 
+		/**
+		 * 创建堆排序bean
+		 *
+		 * @return {@link HeapSortBean}<{@link T}>
+		 */
+		public <T extends Comparable<T>> HeapSortBean<T> createHeapSortBean() {
+			return new HeapSortBean<>();
+		}
 
 	}
 

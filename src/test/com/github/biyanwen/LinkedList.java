@@ -3,6 +3,9 @@ package com.github.biyanwen;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @Author byw
  * @Date 2022/2/23 21:46
@@ -84,13 +87,18 @@ public class LinkedList {
 		Assertions.assertEquals(5, groupOfK.next.next.next.next.value);
 	}
 
+	/**
+	 * 合并两个有序链表
+	 * 输入： 链表1 1 -> 3 -> 5 ; 链表2 2-> 4 -> 6
+	 * 输出： 1-> 2 -> 3 -> 4 -> 5 -> 6
+	 */
 	@Test
 	public void mergeTwoSoredLinkedListTest() {
 		Node oneSoredLined = createOneSoredLinedList();
 		Node twoSoredLined = createTwoSoredLinedList();
 
 		NodeAlgorithm nodeAlgorithm = new NodeAlgorithm();
-		Node newHead = nodeAlgorithm.mergeTwoLists(oneSoredLined, twoSoredLined);
+		Node newHead = nodeAlgorithm.mergeTwoLinkedList(oneSoredLined, twoSoredLined);
 		Assertions.assertEquals(1, newHead.value);
 		Assertions.assertEquals(2, newHead.next.value);
 		Assertions.assertEquals(3, newHead.next.next.value);
@@ -99,19 +107,27 @@ public class LinkedList {
 
 	}
 
-	public Node mergeTwoLists(Node l1, Node l2) {
-		if (l1 == null) {
-			return l2;
-		} else if (l2 == null) {
-			return l1;
-		} else if (l1.value < l2.value) {
-			l1.next = mergeTwoLists(l1.next, l2);
-			return l1;
-		} else {
-			l2.next = mergeTwoLists(l1, l2.next);
-			return l2;
-		}
+	/**
+	 * 合并 K 个有序链表
+	 */
+	@Test
+	public void mergeKOfLinkedListTest() {
+		NodeAlgorithm nodeAlgorithm = new NodeAlgorithm();
+		Node nodeOne = nodeAlgorithm.createNode(3);
+		Node nodeTwo = nodeAlgorithm.createNode(3);
+		Node nodeThree = nodeAlgorithm.createNode(3);
+		List<Node> nodes = Arrays.asList(nodeOne, nodeTwo, nodeThree);
+		Node mergeKOfLinkedList = nodeAlgorithm.mergeKOfLinkedList(nodes);
 
+		Assertions.assertEquals(1, mergeKOfLinkedList.value);
+		Assertions.assertEquals(1, mergeKOfLinkedList.next.value);
+		Assertions.assertEquals(1, mergeKOfLinkedList.next.next.value);
+		Assertions.assertEquals(2, mergeKOfLinkedList.next.next.next.value);
+		Assertions.assertEquals(2, mergeKOfLinkedList.next.next.next.next.value);
+		Assertions.assertEquals(2, mergeKOfLinkedList.next.next.next.next.next.value);
+		Assertions.assertEquals(3, mergeKOfLinkedList.next.next.next.next.next.next.value);
+		Assertions.assertEquals(3, mergeKOfLinkedList.next.next.next.next.next.next.next.value);
+		Assertions.assertEquals(3, mergeKOfLinkedList.next.next.next.next.next.next.next.next.value);
 	}
 
 	private Node createTwoSoredLinedList() {
@@ -144,7 +160,7 @@ public class LinkedList {
 		return head;
 	}
 
-	public static class Node {
+	public static class Node implements Comparable<Node> {
 		private int value;
 		private Node next;
 
@@ -162,6 +178,11 @@ public class LinkedList {
 
 		public void setNext(Node next) {
 			this.next = next;
+		}
+
+		@Override
+		public int compareTo(Node o) {
+			return Integer.compare(this.value, o.value);
 		}
 	}
 
@@ -268,6 +289,61 @@ public class LinkedList {
 		}
 
 		/**
+		 * 合并两个有序链表
+		 *
+		 * @param oneSoredLined 一个弄伤
+		 * @param twoSoredLined 两个弄伤
+		 * @return {@link Node}
+		 */
+		public Node mergeTwoLinkedList(Node oneSoredLined, Node twoSoredLined) {
+			if (oneSoredLined == null) {
+				return twoSoredLined;
+			}
+			if (twoSoredLined == null) {
+				return oneSoredLined;
+			}
+			Node newHead;
+			if (oneSoredLined.value <= twoSoredLined.value) {
+				newHead = oneSoredLined;
+				oneSoredLined.next = mergeTwoLinkedList(oneSoredLined.next, twoSoredLined);
+			} else {
+				newHead = twoSoredLined;
+				twoSoredLined.next = mergeTwoLinkedList(oneSoredLined, twoSoredLined.next);
+			}
+			return newHead;
+		}
+
+		/**
+		 * 合并 K 个链表
+		 *
+		 * @param nodes 节点
+		 * @return {@link Node}
+		 */
+		public Node mergeKOfLinkedList(List<Node> nodes) {
+			Sort.SortAlgorithm sortAlgorithm = new Sort.SortAlgorithm();
+			Sort.HeapSortBean<Node> heapSortBean = sortAlgorithm.createHeapSortBean();
+			for (Node node : nodes) {
+				while (node != null) {
+					heapSortBean.add(node);
+					node = node.next;
+				}
+			}
+			Node newHead = null;
+			Node tmpNode = null;
+			while (!heapSortBean.isEmpty()) {
+				Node poll = heapSortBean.poll();
+				if (newHead == null) {
+					newHead = poll;
+					tmpNode = poll;
+				} else {
+					tmpNode.next = poll;
+					tmpNode = tmpNode.next;
+				}
+			}
+			return newHead;
+		}
+
+		/**
 		 * 创建节点
 		 *
 		 * @param size 大小
@@ -291,22 +367,5 @@ public class LinkedList {
 			return head;
 		}
 
-		public Node mergeTwoLists(Node oneSoredLined, Node twoSoredLined) {
-			if (oneSoredLined == null) {
-				return twoSoredLined;
-			}
-			if (twoSoredLined == null) {
-				return oneSoredLined;
-			}
-			Node newHead;
-			if (oneSoredLined.value <= twoSoredLined.value) {
-				newHead = oneSoredLined;
-				oneSoredLined.next = mergeTwoLists(oneSoredLined.next, twoSoredLined);
-			} else {
-				newHead = twoSoredLined;
-				twoSoredLined.next = mergeTwoLists(oneSoredLined, twoSoredLined.next);
-			}
-			return newHead;
-		}
 	}
 }

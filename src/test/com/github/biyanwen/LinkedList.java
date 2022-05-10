@@ -291,8 +291,8 @@ public class LinkedList {
 		/**
 		 * 合并两个有序链表
 		 *
-		 * @param oneSoredLined 一个弄伤
-		 * @param twoSoredLined 两个弄伤
+		 * @param oneSoredLined 链表1
+		 * @param twoSoredLined 链表2
 		 * @return {@link Node}
 		 */
 		public Node mergeTwoLinkedList(Node oneSoredLined, Node twoSoredLined) {

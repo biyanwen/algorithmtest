@@ -6,31 +6,22 @@ public class Tt {
 
 	@Test
 	public void t() {
-		int[] array = new int[]{-2, 1, -3, 4, -1, 2, 1, -5, 4};
-		int i = maxSubArray(array);
-		System.out.println(i);
+		System.out.println(reverse(123));
 	}
 
-	public int maxSubArray(int[] nums) {
-		if (nums.length == 1) {
-			return nums[0];
-		}
-		Integer max = null;
-		Integer sum = null;
-		for (int num : nums) {
-			if (sum == null) {
-				max = num;
-				sum = num;
-				// 负数直接抛弃，因为加上一个负数一定比之前更小
-			} else if (sum < 0) {
-				sum = num;
-			} else {
-				sum += num;
+	//1、跟10取余数，这样每次能拿到最后一位数字。
+	//2、当前余数 *10 加上下一个余数这样就翻转了。
+	//3、每次循环 x /= 10 这样可以去除已经使用过的元素。
+	public int reverse(int x) {
+		int result = 0;
+		while (x != 0) {
+			if (result < Integer.MIN_VALUE / 10 || result > Integer.MAX_VALUE / 10) {
+				return 0;
 			}
-			if (sum > max) {
-				max = sum;
-			}
+			int remainder = x % 10;
+			result = result * 10 + remainder;
+			x /= 10;
 		}
-		return max;
+		return result;
 	}
 }

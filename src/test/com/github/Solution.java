@@ -11,70 +11,65 @@ class Solution {
                 new TreeNode(3, new TreeNode(5), null));
 
 
+        int i = openLock(new String[]{"0201", "0101", "0102", "1212", "2002" }, "0202");
+        System.out.println(i);
     }
 
-
-    public void solve(char[][] board) {
-        int n = board.length;
-        int m = board[0].length;
-        List<Reduction> reductionList = new ArrayList<>();
-        for (int i = 0; i < m; i++) {
-            fill(board, 0, i, reductionList);
-            fill(board, n - 1, i, reductionList);
+    public int openLock(String[] deadends, String target) {
+        if (Objects.equals(target, "0000")) {
+            return 0;
         }
-        for (int i = 0; i < n; i++) {
-            fill(board, i, 0, reductionList);
-            fill(board, i - 1, 0, reductionList);
+        Map<String, String> deadMap = new HashMap<>();
+        for (String deadend : deadends) {
+            deadMap.put(deadend, deadend);
         }
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                fill(board, i, j, new ArrayList<>());
+        if (deadMap.get("0000") != null) {
+            return -1;
+        }
+        Map<String, String> usedMap = new HashMap<>();
+        usedMap.put("0000", "0000");
+        Queue<String> queue = new LinkedList<>();
+        queue.offer("0000");
+        int num = 0;
+        while (!queue.isEmpty()) {
+            num++;
+            int length = queue.size();
+            for (int i = 0; i < length; i++) {
+                String poll = queue.poll();
+                for (String element : getNextElementList(poll)) {
+                    if (usedMap.get(element) == null && deadMap.get(element) == null) {
+                        if (element.equals(target)) {
+                            return num;
+                        }
+                        queue.offer(element);
+                        usedMap.put(element, element);
+                    }
+                }
             }
         }
-        for (Reduction reduction : reductionList) {
-            board[reduction.i][reduction.j] = 'O';
-        }
+        return -1;
     }
 
-    private void fill(char[][] board, int i, int j, List<Reduction> reductionList) {
-        if (i < 0 || j < 0 || i >= board.length || j >= board[0].length) {
-            return;
+    private Set<String> getNextElementList(String element) {
+        Set<String> result = new HashSet<>();
+
+        char[] chars = element.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            char aChar = chars[i];
+            chars[i] = aChar == '9' ? '0' : (char) (aChar + 1);
+            result.add(new String(chars));
+            chars[i] = aChar == '0' ? '9' : (char) (aChar - 1);
+            result.add(new String(chars));
+            chars[i] = aChar;
         }
-        if (board[i][j] == 'X') {
-            return;
-        }
-        board[i][j] = 'O';
-        reductionList.add(new Reduction(i, j));
-        fill(board, i - 1, j, reductionList);
-        fill(board, i + 1, j, reductionList);
-        fill(board, i + 1, j - 1, reductionList);
-        fill(board, i + 1, j + 1, reductionList);
+        return result;
+    }
+    public char numPrev(char x) {
+        return x == '0' ? '9' : (char) (x - 1);
     }
 
-    private static class Reduction {
-        private int i;
-        private int j;
-
-        public Reduction(int i, int j) {
-            this.i = i;
-            this.j = j;
-        }
-
-        public int getI() {
-            return i;
-        }
-
-        public void setI(int i) {
-            this.i = i;
-        }
-
-        public int getJ() {
-            return j;
-        }
-
-        public void setJ(int j) {
-            this.j = j;
-        }
+    public char numSucc(char x) {
+        return x == '9' ? '0' : (char) (x + 1);
     }
 
     class Node {

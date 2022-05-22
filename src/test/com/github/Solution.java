@@ -13,23 +13,68 @@ class Solution {
 
     }
 
-    private Map<Node, Node> nodeMap = new HashMap<>();
 
-    public Node cloneGraph(Node node) {
-        if (node == null) {
-            return null;
+    public void solve(char[][] board) {
+        int n = board.length;
+        int m = board[0].length;
+        List<Reduction> reductionList = new ArrayList<>();
+        for (int i = 0; i < m; i++) {
+            fill(board, 0, i, reductionList);
+            fill(board, n - 1, i, reductionList);
         }
-        if (nodeMap.containsKey(node)) {
-            return nodeMap.get(node);
+        for (int i = 0; i < n; i++) {
+            fill(board, i, 0, reductionList);
+            fill(board, i - 1, 0, reductionList);
         }
-        Node cloneNode = new Node(node.val, new ArrayList<>());
-        nodeMap.put(node, cloneNode);
-        if (node.neighbors != null && node.neighbors.size() > 0) {
-            for (Node neighbor : node.neighbors) {
-                cloneNode.neighbors.add(cloneGraph(neighbor));
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                fill(board, i, j, new ArrayList<>());
             }
         }
-        return cloneNode;
+        for (Reduction reduction : reductionList) {
+            board[reduction.i][reduction.j] = 'O';
+        }
+    }
+
+    private void fill(char[][] board, int i, int j, List<Reduction> reductionList) {
+        if (i < 0 || j < 0 || i >= board.length || j >= board[0].length) {
+            return;
+        }
+        if (board[i][j] == 'X') {
+            return;
+        }
+        board[i][j] = 'O';
+        reductionList.add(new Reduction(i, j));
+        fill(board, i - 1, j, reductionList);
+        fill(board, i + 1, j, reductionList);
+        fill(board, i + 1, j - 1, reductionList);
+        fill(board, i + 1, j + 1, reductionList);
+    }
+
+    private static class Reduction {
+        private int i;
+        private int j;
+
+        public Reduction(int i, int j) {
+            this.i = i;
+            this.j = j;
+        }
+
+        public int getI() {
+            return i;
+        }
+
+        public void setI(int i) {
+            this.i = i;
+        }
+
+        public int getJ() {
+            return j;
+        }
+
+        public void setJ(int j) {
+            this.j = j;
+        }
     }
 
     class Node {

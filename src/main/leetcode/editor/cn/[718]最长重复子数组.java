@@ -29,6 +29,7 @@
 
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
+    // 从后往前遍历可以避免判断索引小于 0 的情况。
     public int findLength(int[] nums1, int[] nums2) {
         int[][] db = new int[nums1.length + 1][nums2.length + 1];
         int res = 0;
